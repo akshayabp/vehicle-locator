@@ -1,0 +1,197 @@
+version: '3.1'
+
+services:
+    eurekaserver:
+        image: akshaypawaskar/eureka
+        ports:
+            - "8761:8761"
+
+    zipkinserver:
+        image: openzipkin/zipkin
+        ports:
+            - "9411:9411"
+            
+    mysqlserver:
+        image: akshaypawaskar/vehicle-locator-mysql
+        ports:
+            - "3306:3306"
+        environment: 
+            MYSQL_ROOT_PASSWORD: "password"
+
+    vehicle-locator-management-rest:
+        image: akshaypawaskar/vehicle-locator-management-rest
+        environment: 
+            spring.profiles.active: "docker"
+            spring.cloud.inetutils.preferredNetworks: "10.0"
+        ports:
+            - "8085:8085"
+        depends_on:
+            - eurekaserver
+            - zipkinserver
+            - mysqlserver
+
+    mongo:
+        image: mongo
+        ports:
+            - "27017:27017"
+
+    route-service:
+        image: akshaypawaskar/route-service
+        environment:
+            spring.profiles.active: "docker"
+            spring.cloud.inetutils.preferredNetworks: "10.0"
+        ports:
+            - "8083:8083"        
+        depends_on:
+            - mongo
+
+    activemq:
+        image: webcenter/activemq:latest
+        ports:
+           - "8161:8161"
+           - "61616:61616"
+           - "61613:61613"
+
+    vehicle-locator-websocket:
+        image: akshaypawaskar/vehicle-locator-websocket
+        ports:
+            - "8084:8084"
+        environment: 
+           spring.profiles.active: "docker"
+           spring.cloud.inetutils.preferredNetworks: "10.0"
+        depends_on:
+            - eurekaserver
+            - zipkinserver
+            - activemq
+
+    rabbitmq:
+        image: rabbitmq:3-management
+        ports:
+            - "15672:15672"
+            - "5672:5672"
+
+    spring-cloud-publisher:
+        image: akshaypawaskar/spring-cloud-publisher
+        ports:
+            - "8082:8082"
+        environment: 
+            spring.profiles.active: "docker"
+        depends_on:
+           - eurekaserver
+           - zipkinserver
+           - rabbitmq
+ 
+    websocket-spring-cloud-subscriber:
+       image: akshaypawaskar/websocket-spring-cloud-subscriber
+       ports:
+           - "9000:9000"
+       environment: 
+          spring.profiles.active: "docker"
+       depends_on:
+          - eurekaserver
+          - zipkinserver
+          - rabbitmq
+
+    route-service-spring-cloud-subscriber:
+       image: akshaypawaskar/route-service-spring-cloud-subscriber
+       ports:
+           - "9001:9001"
+       environment: 
+          spring.profiles.active: "docker"
+       depends_on:
+          - eurekaserver
+          - zipkinserver
+          - rabbitmq            
+
+    redisserver:
+        image: redis
+        ports:
+            - "6379:6379"
+
+    cache-service:
+        image: akshaypawaskar/cache-service
+        environment: 
+            spring.profiles.active: "docker"
+        ports:
+             - "8088:8088"
+        depends_on:
+            - eurekaserver
+            - zipkinserver
+            - redisserver
+
+    vehicle-locator-angular-app:
+        image: akshaypawaskar/vehicle-locator-angular-app
+        ports:
+             - "80:80"
+        depends_on:
+            - vehicle-locator-websocket
+            - vehicle-locator-management-rest
+            - cache-service
+
+    vehicle-locator-simulator-angular-app:
+        image: akshaypawaskar/vehicle-locator-simulator-angular-app
+        ports:
+             - "9201:80"
+        depends_on:
+            - spring-cloud-publisher
+            - vehicle-locator-websocket
+            - route-service
+
+    viz:
+        image: dockersamples/visualizer
+        volumes:
+            - "/var/run/docker.sock:/var/run/docker.sock"
+        ports:
+            - "8090:8080"
+        deploy:
+            placement:
+                constraints:
+                    - node.role==manager
+
+    prometheus:
+        image: akshaypawaskar/vehicle-locator-prometheus
+        ports:
+            - "9090:9090"
+        deploy:
+            placement:
+                constraints:
+                    - node.role==manager
+
+    grafana:
+        image: akshaypawaskar/vehicle-locator-grafana
+        ports:
+            - "3000:3000"
+        deploy:
+            placement:
+                constraints:
+                    - node.role==manager
+
+    elasticsearch:
+        image: elasticsearch:6.4.0
+        environment: 
+            discovery.type: "single-node"
+        ports:
+            - "9200:9200"
+            - "9300:9300"
+        volumes:
+            - es-data:/usr/share/elasticsearch/data:rw
+
+    kibana:
+        image: kibana:6.4.0
+        environment: 
+            ELASTICSEARCH_URL: "http://elasticsearch:9200"
+        ports:
+            - "5601:5601"
+        depends_on:
+            - elasticsearch
+
+    logstash:
+        image: akshaypawaskar/vehicle-locator-logstash
+        ports:
+            - "5044:5044"
+        depends_on:
+            - elasticsearch
+
+volumes:
+  es-data: {}
+
