@@ -19,7 +19,6 @@ Demonstrated concepts:
 
 Consists of following microservices:
 
-* [Polyglot Persistence with Spring Cloud and Docker](http://www.kennybastani.com)
 * [spring-cloud-publisher](https://github.com/akshayabp/spring-cloud-publisher)
 * [websocket-spring-cloud-subscriber](https://github.com/akshayabp/websocket-spring-cloud-subscriber)
 * [vehicle-locator-websocket](https://github.com/akshayabp/vehicle-locator-websocket)
