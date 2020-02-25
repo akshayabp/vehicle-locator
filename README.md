@@ -15,7 +15,7 @@ Demonstrated concepts:
 * PubSub model using Spring Cloud Stream and RabbitMQ
 * Angular application to plot vehicle's location on HERE Maps. Also developed simulator application to generate  sample routes
 
-###Subprojects
+### Subprojects
 
 Consists of following microservices:
 
@@ -31,6 +31,6 @@ Consists of following microservices:
 * [vehicle-locator-simulator](https://github.com/akshayabp/vehicle-locator-simulator)
 * [vehicle-locator-angular-app-here-maps](https://github.com/akshayabp/vehicle-locator-angular-app-here-maps)
 
-###Architecure
+### Architecure
 
 ![https://github.com/akshayabp/vehicle-locator/blob/master/architecture.jpg?raw=true](https://github.com/akshayabp/vehicle-locator/blob/master/architecture.jpg?raw=true) 
