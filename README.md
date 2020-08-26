@@ -30,6 +30,10 @@ Consists of following microservices:
 * [vehicle-locator-simulator](https://github.com/akshayabp/vehicle-locator-simulator)
 * [vehicle-locator-angular-app-here-maps](https://github.com/akshayabp/vehicle-locator-angular-app-here-maps)
 
+### Dashboard
+
+![https://github.com/akshayabp/vehicle-locator/blob/master/screenshots/vehicle-locator-app-screenshot2.PNG?raw=true](https://github.com/akshayabp/vehicle-locator/blob/master/screenshots/vehicle-locator-app-screenshot2.PNG?raw=true) 
+
 ### Architecure
 
 ![https://github.com/akshayabp/vehicle-locator/blob/master/architecture.jpg?raw=true](https://github.com/akshayabp/vehicle-locator/blob/master/architecture.jpg?raw=true) 
