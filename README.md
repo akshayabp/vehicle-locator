@@ -31,7 +31,7 @@ Consists of following microservices:
 * [vehicle-locator-angular-app-here-maps](https://github.com/akshayabp/vehicle-locator-angular-app-here-maps)
 
 
-### Architecure
+### Architecture
 
 ![https://github.com/akshayabp/vehicle-locator/blob/master/architecture.jpg?raw=true](https://github.com/akshayabp/vehicle-locator/blob/master/architecture.jpg?raw=true) 
 
